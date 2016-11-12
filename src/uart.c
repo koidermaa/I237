@@ -43,7 +43,7 @@ int uart0_putchar(char c, FILE *stream)
     (void) stream;
 
     if (c == '\n') {
-        uart_putchar('\r', stream);
+        uart0_putchar('\r', stream);
     }
 
     loop_until_bit_is_set(UCSR0A, UDRE0);
@@ -56,7 +56,7 @@ int uart3_putchar(char c, FILE *stream)
     (void) stream;
 
     if (c == '\n') {
-        uart_putchar('\r', stream);
+        uart3_putchar('\r', stream);
     }
 
     loop_until_bit_is_set(UCSR3A, UDRE3);
