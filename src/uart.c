@@ -41,6 +41,7 @@ void uart3_init(void)
 int uart0_putchar(char c, FILE *stream)
 {
     (void) stream;
+
     if (c == '\n') {
         uart_putchar('\r', stream);
     }
@@ -53,6 +54,7 @@ int uart0_putchar(char c, FILE *stream)
 int uart3_putchar(char c, FILE *stream)
 {
     (void) stream;
+
     if (c == '\n') {
         uart_putchar('\r', stream);
     }
