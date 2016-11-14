@@ -12,12 +12,12 @@ void main (void)
     /* Set pin 3 of PORTA for output */
     DDRA |= _BV(DDA3);
     /* Init error console as stderr in UART3 and print user code info */
-    uart3_init();
+    uart3_initialize();
     stderr = &uart3_out;
     fprintf(stderr, "Version: %s built on: %s %s\n",
             GIT_DESCR, __DATE__, __TIME__);
     fprintf(stderr, "avr-libc version: %s\n", __AVR_LIBC_VERSION_STRING__);
-    /* End UART3 init and info print */
+    /* End UART3 initialize and info print */
     /* Test assert - REMOVE IN FUTURE LABS */
     char *array;
     uint32_t i = 1;
