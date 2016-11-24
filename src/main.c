@@ -24,6 +24,12 @@ void main (void)
     fprintf(stdout, "%s\n", STUD_NAME);
     /* Print ASCII table */
     print_ascii_tbl(stdout);
+    /* Create 128 element array */
+    char cArray[128] = {0};
+    for (char i = 0; i < sizeof(cArray); i++) {
+        cArray[i] = i;
+    }
+    print_for_human(stdout, carray, sizeof(cArray));
 
     while (1) {
         /* Set pin 3 high to turn LED on */
