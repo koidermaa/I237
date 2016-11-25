@@ -2,6 +2,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <string.h>
+#include <avr/pgmspace.h>
 #include "uart.h"
 #include "hmi_msg.h"
 #include "print_helper.h"
@@ -17,13 +18,13 @@ void main (void)
     uart3_initialize();
     stdout = stdin = &uart0_io;
     stderr = &uart3_out;
-    fprintf(stderr, "Version: %s built on: %s %s\n",
-            GIT_DESCR, __DATE__, __TIME__);
-    fprintf(stderr, "avr-libc version: %s avr-gcc version: %s\n",
-            __AVR_LIBC_VERSION_STRING__, __VERSION__);
+    fprintf(stderr, PSTR(VER_FW "\n"),
+            PSTR(GIT_DESCR), PSTR(__DATE__), PSTR(__TIME__));
+    fprintf(stderr, PSTR(VER_LIBC_GCC "\n"),
+            PSTR(__AVR_LIBC_VERSION_STRING__), PSTR(__VERSION__));
     /* End UART0 and UART3 initialize and info print */
     /* Print student name */
-    fprintf(stdout, "%s\n", STUD_NAME);
+    fprintf(stdout, PSTR(STUD_NAME "\n"));
     /* Print ASCII table */
     print_ascii_tbl(stdout);
     /* Create 128 element array */
@@ -36,21 +37,22 @@ void main (void)
     print_for_human(stdout, cArray, sizeof(cArray));
 
     while (1) {
+        /* Set pin 3 high to turn LED on */
+        PORTA |= _BV(PORTA3);
+        _delay_ms(BLINK_DELAY_MS);
+
         char letter;
-        fprintf(stdout, "Enter Month name first letter >");
+        fprintf(stdout, PSTR(ENTER_MONTH_NAME));
         fscanf(stdin, "%c", &letter);
         fprintf(stdout, "%c\n", letter);
 
         /* Check if letter exists and print */
         for (int i = 0; i < 6; i++) {
-            if (!strncmp(&letter, months[i], 1)) {
-                fprintf(stdout, "%s\n", months[i]);
+            if (!strncmp(&letter, (PGM_P)pgm_read_word(&(months[i])), 1)) {
+                fprintf(stdout, "%s\n", (PGM_P)pgm_read_word(&(months[i])));
             }
         }
 
-        /* Set pin 3 high to turn LED on */
-        PORTA |= _BV(PORTA3);
-        _delay_ms(BLINK_DELAY_MS);
         /* Set pin 3 low to turn LED off */
         PORTA &= ~_BV(PORTA3);
         _delay_ms(BLINK_DELAY_MS);
