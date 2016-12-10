@@ -22,13 +22,14 @@ static inline void init_pins(void)
 {
     /* Set pin 3 of PORTA (ARDUINO mega pin 25) for output and set low */
     DDRA |= _BV(DDA3);
+    PORTA &= ~_BV(PORTA3);
 }
 
 
 static inline void init_uart(void)
 {
     uart0_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
-    uart3_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
+    uart3_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));	
     stderr = &uart3_out;
     stdout = stdin = &uart0_io;
 }
@@ -121,7 +122,9 @@ void main (void)
 
     while (1) {
         heartbeat();
-        find_month();
+	if (uart0_available()){
+            find_month();
+	}
     }
 }
 
