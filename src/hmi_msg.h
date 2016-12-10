@@ -2,9 +2,10 @@
 #define _HMI_MSG_H_
 
 #define STUD_NAME "Kristo Oidermaa"
-#define ENTER_MONTH_NAME "Enter Month name first letter >"
+#define ENTER_MONTH_NAME "Enter month name first letter >"
 #define VER_FW "Version: %s built on: %s %s"
 #define VER_LIBC_GCC "avr-libc version: %s avr-gcc version: %s"
+#define LBL_UPTIME "Uptime"
 
 const char month_1[] PROGMEM = "January";
 const char month_2[] PROGMEM = "February";
