@@ -34,11 +34,13 @@ static inline void init_uart(void)
     stdout = stdin = &uart0_io;
 }
 
+
 static inline void init_lcd(void)
 {
     lcd_init();
     lcd_clrscr();
 }
+
 
 static inline void init_counter(void)
 {
@@ -50,6 +52,7 @@ static inline void init_counter(void)
     OCR1A = 62549; // Note that it is actually two registers OCR5AH and OCR5AL
     TIMSK1 |= _BV(OCIE1A); // Output compare a match interrupt enable
 }
+
 
 static inline void print_start_data (void)
 {
@@ -74,6 +77,7 @@ static inline void print_start_data (void)
     fprintf_P(stdout, PSTR(ENTER_MONTH_NAME));
 }
 
+
 static inline void find_month (void)
 {
     /* Ask user to input first letter of month name */
@@ -92,8 +96,10 @@ static inline void find_month (void)
             lcd_puts_P(PSTR(" "));
         }
     }
-    fprintf_P(stdout, PSTR(ENTER_MONTH_NAME));		
+
+    fprintf_P(stdout, PSTR(ENTER_MONTH_NAME));
 }
+
 
 static inline void heartbeat(void)
 {
@@ -111,6 +117,7 @@ static inline void heartbeat(void)
     }
 }
 
+
 void main (void)
 {
     init_pins();
@@ -119,13 +126,12 @@ void main (void)
     init_counter();
     sei();
     print_start_data();
-    
 
     while (1) {
         heartbeat();
-	if (uart0_available()){	
-        find_month();
-	}
+        if (uart0_available()) {
+            find_month();
+        }
     }
 }
 

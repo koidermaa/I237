@@ -24,7 +24,7 @@ int uart3_putchar(char c, FILE *stream)
 
     /*Add windows line endings*/
     if (c == '\n') {
-	uart3_putc('\r');
+        uart3_putc('\r');
         uart3_putc('\n');
         return 0;
     }
