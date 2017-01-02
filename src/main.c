@@ -10,10 +10,14 @@
 #include "print_helper.h"
 #include "../lib/hd44780_111/hd44780.h"
 #include "../lib/andygock_avr-uart/uart.h"
+#include "../lib/helius_microrl/microrl.h"
+#include "cli_microrl.h"
 
-#define BLINK_DELAY_MS 100
 #define UART_BAUD 9600
-#define COUNT_SECONDS
+
+// Create microrl object and pointer on it
+static microrl_t rl;
+static microrl_t *prl = &rl;
 
 /* global seconds counter */
 volatile uint32_t counter_1;
@@ -26,19 +30,25 @@ static inline void init_pins(void)
 }
 
 
-static inline void init_uart(void)
+static inline void init_uart_cli(void)
 {
     uart0_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
-    uart3_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));	
+    uart3_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
     stderr = &uart3_out;
     stdout = stdin = &uart0_io;
+    // Call init with ptr to microrl instance and print callback
+    microrl_init (prl, cli_print);
+    // Set callback for execute
+    microrl_set_execute_callback (prl, cli_execute);
 }
+
 
 static inline void init_lcd(void)
 {
     lcd_init();
     lcd_clrscr();
 }
+
 
 static inline void init_counter(void)
 {
@@ -51,48 +61,16 @@ static inline void init_counter(void)
     TIMSK1 |= _BV(OCIE1A); // Output compare a match interrupt enable
 }
 
-static inline void print_start_data (void)
+
+static inline void print_start_data(void)
 {
     /* Print version libc and gcc info */
-    fprintf_P(stderr, PSTR(VER_FW "\n"),
-              GIT_DESCR, __DATE__, __TIME__);
-    fprintf_P(stderr, PSTR(VER_LIBC_GCC "\n"),
-              __AVR_LIBC_VERSION_STRING__, __VERSION__);
+    fprintf_P(stderr, PSTR(VER_FW "\n"));
+    fprintf_P(stderr, PSTR(VER_LIBC_GCC "\n"));
     /* Print student name*/
     fprintf_P(stdout, PSTR(STUD_NAME "\n"));
     /* Display student name in LCD */
     lcd_puts_P(PSTR(STUD_NAME));
-    /* Print ASCII maps to CLI */
-    print_ascii_tbl(stdout);
-    unsigned char cArray[128] = {0};
-
-    for (unsigned char i = 0; i < sizeof(cArray); i++) {
-        cArray[i] = i;
-    }
-
-    print_for_human(stdout, cArray, sizeof(cArray));
-    fprintf_P(stdout, PSTR(ENTER_MONTH_NAME));
-}
-
-static inline void find_month (void)
-{
-    /* Ask user to input first letter of month name */
-    char letter;
-    fscanf(stdin, "%c", &letter);
-    fprintf(stdout, "%c\n", letter);
-    /* Try to find month and print to CLI and LCD */
-    lcd_clr(0x40, 16);
-    lcd_goto(0x40);
-
-    for (int i = 0; i < 6; i++) {
-        if (!strncmp_P(&letter, (PGM_P)pgm_read_word(&months[i]), 1)) {
-            fprintf_P(stdout, (PGM_P)pgm_read_word(&months[i]));
-            fprintf(stdout, "\n");
-            lcd_puts_P((PGM_P)pgm_read_word(&months[i]));
-            lcd_puts_P(PSTR(" "));
-        }
-        fprintf_P(stdout, PSTR(ENTER_MONTH_NAME));
-    }
 }
 
 static inline void heartbeat(void)
@@ -111,20 +89,19 @@ static inline void heartbeat(void)
     }
 }
 
-void main (void)
+
+void main(void)
 {
     init_pins();
-    init_uart();
+    init_uart_cli();
     init_lcd();
     init_counter();
-    print_start_data();
     sei();
+    print_start_data();
 
     while (1) {
         heartbeat();
-	if (uart0_available()){
-            find_month();
-	}
+        microrl_insert_char (prl, cli_get_char());
     }
 }
 

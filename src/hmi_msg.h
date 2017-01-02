@@ -2,18 +2,30 @@
 #define _HMI_MSG_H_
 
 #define STUD_NAME "Kristo Oidermaa"
-#define ENTER_MONTH_NAME "Enter Month name first letter >"
-#define VER_FW "Version: %s built on: %s %s"
-#define VER_LIBC_GCC "avr-libc version: %s avr-gcc version: %s"
+#define VER_FW "Version: " GIT_DESCR " built on: " __DATE__" "__TIME__
+#define VER_LIBC_GCC "avr-libc version: " __AVR_LIBC_VERSION_STRING__ " avr-gcc version: " __VERSION__
 #define LBL_UPTIME "Uptime"
+#define CLI_HELP_MSG "Implemented commands:"
+#define PRT_CMD_ERR "Command not implemented.\n Use <help> to get help."
+#define PRT_ARG_ERR "To few or too many arguments for this command\nUse <help>"
+#define HELP_CMD "help"
+#define HELP_HELP "Get help"
+#define VER_CMD "version"
+#define VER_HELP "Print FW version"
+#define ASCII_CMD "ascii"
+#define ASCII_HELP "print ASCII tables"
+#define MONTH_CMD "month"
+#define MONTH_HELP "Find matching month from lookup list. Usage: month <string>"
 
-const char month_1[] PROGMEM = "January";
-const char month_2[] PROGMEM = "February";
-const char month_3[] PROGMEM = "March";
-const char month_4[] PROGMEM = "April";
-const char month_5[] PROGMEM = "May";
-const char month_6[] PROGMEM = "June";
+extern PGM_P const months[];
 
-PGM_P const months[] PROGMEM = {month_1, month_2, month_3, month_4, month_5, month_6};
+extern const char help_cmd[];
+extern const char help_help[];
+extern const char ver_cmd[];
+extern const char ver_help[];
+extern const char ascii_cmd[];
+extern const char ascii_help[];
+extern const char month_cmd[];
+extern const char month_help[];
 
 #endif /* _HMI_MSG_H_ */
