@@ -30,12 +30,17 @@ static inline void init_pins(void)
 }
 
 
-static inline void init_uart_cli(void)
+static inline void init_uart(void)
 {
     uart0_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
     uart3_init(UART_BAUD_SELECT(UART_BAUD, F_CPU));
     stderr = &uart3_out;
     stdout = stdin = &uart0_io;
+}
+
+
+static inline void init_cli(void)
+{
     // Call init with ptr to microrl instance and print callback
     microrl_init (prl, cli_print);
     // Set callback for execute
@@ -73,6 +78,7 @@ static inline void print_start_data(void)
     lcd_puts_P(PSTR(STUD_NAME));
 }
 
+
 static inline void heartbeat(void)
 {
     static uint32_t time_y2k_prev;
@@ -93,11 +99,12 @@ static inline void heartbeat(void)
 void main(void)
 {
     init_pins();
-    init_uart_cli();
+    init_uart();
     init_lcd();
     init_counter();
     sei();
     print_start_data();
+    init_cli();
 
     while (1) {
         heartbeat();

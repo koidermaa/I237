@@ -7,9 +7,16 @@
 #include "print_helper.h"
 #include "cli_microrl.h"
 
-
 #define UART_STATUS_MASK 0x00FF
 #define NUM_ELEMS(x) (sizeof(x) / sizeof((x)[0]))
+
+void cli_print_help(const char *const *argv);
+void cli_print_cmd_error(void);
+void cli_print_cmd_arg_error(void);
+void cli_print_ver(const char *const *argv);
+void cli_print_ascii_tbls(const char *const *argv);
+void cli_handle_month(const char *const *argv);
+
 
 typedef struct cli_cmd {
     PGM_P cmd;
@@ -135,5 +142,41 @@ int cli_execute(int argc, const char *const *argv)
 
     cli_print_cmd_error();
     return 0;
+}
+
+
+void cli_read(const char *const *argv)
+{
+    (void) argv;
+    printf_P(PSTR("\n"));
+}
+
+
+void cli_add(const char *const *argv)
+{
+    (void) argv;
+    printf_P(PSTR("\n"));
+
+}
+
+
+void cli_remove(const char *const *argv)
+{
+    (void) argv;
+    printf_P(PSTR("\n"));
+}
+
+
+void cli_list(const char *const *argv)
+{
+    (void) argv;
+    printf_P(PSTR("\n"));
+}
+
+
+void cli_mem(const char *const *argv)
+{
+    (void) argv;
+    printf_P(PSTR("\n"));
 }
 

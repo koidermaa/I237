@@ -16,6 +16,16 @@
 #define ASCII_HELP "print ASCII tables"
 #define MONTH_CMD "month"
 #define MONTH_HELP "Find matching month from lookup list. Usage: month <string>"
+#define READ_CMD "read"
+#define READ_HELP "Read card and print card data"
+#define ADD_CMD "add"
+#define ADD_HELP "Add a new card"
+#define REMOVE_CMD "remove"
+#define REMOVE_HELP "Remove a card"
+#define LIST_CMD "list"
+#define LIST_HELP "Print all cards"
+#define MEM_CMD "memory"
+#define MEM_HELP "Show memory usage"
 
 extern PGM_P const months[];
 
