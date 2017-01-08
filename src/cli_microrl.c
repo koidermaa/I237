@@ -3,9 +3,12 @@
 #include <avr/pgmspace.h>
 #include "../lib/hd44780_111/hd44780.h"
 #include "../lib/andygock_avr-uart/uart.h"
+#include "../lib/andy_brown_memdebug/memdebug.h"
+#include "../lib/matejx_avr_lib/mfrc522.h"
 #include "hmi_msg.h"
 #include "print_helper.h"
 #include "cli_microrl.h"
+#include "rfid.h"
 
 #define UART_STATUS_MASK 0x00FF
 #define NUM_ELEMS(x) (sizeof(x) / sizeof((x)[0]))
@@ -16,6 +19,11 @@ void cli_print_cmd_arg_error(void);
 void cli_print_ver(const char *const *argv);
 void cli_print_ascii_tbls(const char *const *argv);
 void cli_handle_month(const char *const *argv);
+void cli_rfid_read(const char *const *argv);
+void cli_add(const char *const *argv);
+void cli_remove(const char *const *argv);
+void cli_list(const char *const *argv);
+void cli_mem_stat(const char *const *argv);
 
 
 typedef struct cli_cmd {
@@ -30,7 +38,12 @@ const cli_cmd_t cli_cmds[] = {
     {help_cmd, help_help, cli_print_help, 0},
     {ver_cmd, ver_help, cli_print_ver, 0},
     {ascii_cmd, ascii_help, cli_print_ascii_tbls, 0},
-    {month_cmd, month_help, cli_handle_month, 1}
+    {month_cmd, month_help, cli_handle_month, 1},
+    {read_cmd, read_help, cli_rfid_read, 0},
+    {add_cmd, add_help, cli_add, 1},
+    {remove_cmd, remove_help, cli_remove, 1},
+    {list_cmd, list_help, cli_list, 0},
+    {mem_cmd, mem_help, cli_mem_stat, 0}
 };
 
 
@@ -108,6 +121,78 @@ void cli_handle_month(const char *const *argv)
 }
 
 
+void cli_rfid_read(const char *const *argv)
+{
+    (void) argv;
+    Uid uid;
+    Uid *uid_ptr = &uid;
+    printf_P(PSTR("\n"));
+
+    if (PICC_IsNewCardPresent()) {
+        printf_P(PSTR(CARD_SELECTED_MSG "\n"));
+        PICC_ReadCardSerial(uid_ptr);
+        printf_P(PSTR(UID_SIZE_MSG "\n"), uid.size);
+        printf_P(PSTR(UID_SAK_MSG"\n"), uid.sak);
+        printf_P(PSTR(CARD_UID_MSG));
+
+        for (byte i = 0; i < uid.size; i++) {
+            printf("%02X", uid.uidByte[i]);
+        }
+        printf_P(PSTR("\n"));
+    } else {
+        printf_P((PSTR(CARD_NOT_SELECTED"\n")));
+    }
+}
+
+
+void cli_add(const char *const *argv)
+{
+    (void) argv;
+    rfid_add_card(argv[1]);
+    printf_P(PSTR("\nCommand not implemented\n"));
+
+}
+
+
+void cli_remove(const char *const *argv)
+{
+    (void) argv;
+    printf_P(PSTR("\nCommand not implemented\n"));
+}
+
+
+void cli_list(const char *const *argv)
+{
+    (void) argv;
+    printf_P(PSTR("\nCommand not implemented\n"));
+}
+
+
+void cli_mem_stat(const char *const *argv)
+{
+    (void) argv;
+    extern int __heap_start, *__brkval;
+    int v;
+    int space;
+    static int prev_space;
+    space = (int) &v - (__brkval == 0 ? (int) &__heap_start :(int) __brkval);
+    printf_P(PSTR("Heap statistics\n"));
+    printf_P(PSTR("Used: %d\n"), getMemoryUsed());
+    printf_P(PSTR("Free: %d\n"), getFreeMemory());
+    printf_P(PSTR("\nSpace between stack and heap:\n"));
+    printf_P(PSTR("Current %d\n"), space);
+    printf_P(PSTR("Previous %d\n"), prev_space);
+    printf_P(PSTR("Change %d\n"), space - prev_space);
+    printf_P(PSTR("\nFreelist\n"));
+    printf_P(PSTR("Freelist size: %d\n"), getFreeListSize());
+    printf_P(PSTR("Blocks in freelist: %d\n"), getNumberOfBlocksInFreeList());
+    printf_P(PSTR("Largest block in freelist: %d\n"), getLargestBlockInFreeList());
+    printf_P(PSTR("Largest freelist block: %d\n"), getLargestAvailableMemoryBlock());
+    printf_P(PSTR("Largest allocable block: %d\n"), getLargestNonFreeListBlock());
+    prev_space = space;
+}
+
+
 void cli_print_cmd_error(void)
 {
     printf_P(PSTR("\n"));
@@ -142,41 +227,5 @@ int cli_execute(int argc, const char *const *argv)
 
     cli_print_cmd_error();
     return 0;
-}
-
-
-void cli_read(const char *const *argv)
-{
-    (void) argv;
-    printf_P(PSTR("\n"));
-}
-
-
-void cli_add(const char *const *argv)
-{
-    (void) argv;
-    printf_P(PSTR("\n"));
-
-}
-
-
-void cli_remove(const char *const *argv)
-{
-    (void) argv;
-    printf_P(PSTR("\n"));
-}
-
-
-void cli_list(const char *const *argv)
-{
-    (void) argv;
-    printf_P(PSTR("\n"));
-}
-
-
-void cli_mem(const char *const *argv)
-{
-    (void) argv;
-    printf_P(PSTR("\n"));
 }
 

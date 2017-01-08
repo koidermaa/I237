@@ -11,6 +11,7 @@
 #include "../lib/hd44780_111/hd44780.h"
 #include "../lib/andygock_avr-uart/uart.h"
 #include "../lib/helius_microrl/microrl.h"
+#include "../lib/matejx_avr_lib/mfrc522.h"
 #include "cli_microrl.h"
 
 #define UART_BAUD 9600
@@ -45,6 +46,13 @@ static inline void init_cli(void)
     microrl_init (prl, cli_print);
     // Set callback for execute
     microrl_set_execute_callback (prl, cli_execute);
+}
+
+
+static inline void init_rfid_reader(void)
+{
+    MFRC522_init();
+    PCD_Init();
 }
 
 
@@ -105,6 +113,7 @@ void main(void)
     sei();
     print_start_data();
     init_cli();
+    init_rfid_reader();
 
     while (1) {
         heartbeat();
