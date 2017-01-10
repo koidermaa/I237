@@ -1,3 +1,22 @@
+/*   Copyright 2017 Kristo Oidermaa
+
+    This file is part of I237 homework project
+
+    I237 homework is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    I237 homework is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with I237 homework.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #ifndef _HMI_MSG_H_
 #define _HMI_MSG_H_
 
@@ -33,7 +52,11 @@
 #define CARD_UID_MSG "Card UID: "
 #define CARD_NOT_SELECTED "Unable to select card"
 #define MEM_FAIL_MSG "Memory operation failed"
-
+#define CARD_PRESENT_MSG "Card is already in the list"
+#define CARD_ADDED_MSG "Card has been added to the list"
+#define NO_CARDS_MSG "No cards in the list"
+#define CARD_REMOVED_MSG "Card was successfully removed"
+#define ACCESS_DENIED_MSG "Access denied!!"
 
 extern PGM_P const months[];
 

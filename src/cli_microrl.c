@@ -1,3 +1,22 @@
+/*   Copyright 2017 Kristo Oidermaa
+
+    This file is part of I237 homework project
+
+    I237 homework is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    I237 homework is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with I237 homework.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <avr/pgmspace.h>
@@ -138,6 +157,7 @@ void cli_rfid_read(const char *const *argv)
         for (byte i = 0; i < uid.size; i++) {
             printf("%02X", uid.uidByte[i]);
         }
+
         printf_P(PSTR("\n"));
     } else {
         printf_P((PSTR(CARD_NOT_SELECTED"\n")));
@@ -149,22 +169,20 @@ void cli_add(const char *const *argv)
 {
     (void) argv;
     rfid_add_card(argv[1]);
-    printf_P(PSTR("\nCommand not implemented\n"));
-
 }
 
 
 void cli_remove(const char *const *argv)
 {
     (void) argv;
-    printf_P(PSTR("\nCommand not implemented\n"));
+    rfid_remove_card(argv[1]);
 }
 
 
 void cli_list(const char *const *argv)
 {
     (void) argv;
-    printf_P(PSTR("\nCommand not implemented\n"));
+    rfid_list_cards();
 }
 
 
@@ -175,7 +193,7 @@ void cli_mem_stat(const char *const *argv)
     int v;
     int space;
     static int prev_space;
-    space = (int) &v - (__brkval == 0 ? (int) &__heap_start :(int) __brkval);
+    space = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
     printf_P(PSTR("Heap statistics\n"));
     printf_P(PSTR("Used: %d\n"), getMemoryUsed());
     printf_P(PSTR("Free: %d\n"), getFreeMemory());
@@ -187,7 +205,8 @@ void cli_mem_stat(const char *const *argv)
     printf_P(PSTR("Freelist size: %d\n"), getFreeListSize());
     printf_P(PSTR("Blocks in freelist: %d\n"), getNumberOfBlocksInFreeList());
     printf_P(PSTR("Largest block in freelist: %d\n"), getLargestBlockInFreeList());
-    printf_P(PSTR("Largest freelist block: %d\n"), getLargestAvailableMemoryBlock());
+    printf_P(PSTR("Largest freelist block: %d\n"),
+             getLargestAvailableMemoryBlock());
     printf_P(PSTR("Largest allocable block: %d\n"), getLargestNonFreeListBlock());
     prev_space = space;
 }
